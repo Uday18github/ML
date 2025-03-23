@@ -1,0 +1,72 @@
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_breast_cancer
+
+dataset=load_breast_cancer(as_frame=True)
+dataset['target'].value_counts()
+
+x=dataset['data']
+y=dataset['target']
+x
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.25,random_state=0)
+
+from sklearn.preprocessing import StandardScaler
+ss_train=StandardScaler()
+x_train=ss_train.fit_transform(x_train)
+models={}
+x_train
+
+ss_test=StandardScaler()
+x_test=ss_test.fit_transform(x_test)
+
+from sklearn.metrics import confusion_matrix
+cm=confusion_matrix(y_test,predictions)
+
+TN,FP,FN,TP=confusion_matrix(y_test,predictions).ravel()
+print('True Positive(TP)=',TP)
+print('False Positive(FP)=',FP)
+print('True negative(TN)=',TN)
+print('False negative(FN)=',FN)
+accuracy=(TP+TN)/(TP+FP+TN+FN)
+print('Accuracy of binary classifier={:0.3f}'.format(accuracy))
+models={}
+
+from sklearn.linear_model import LogisticRegression
+models['Logistic Regression']=LogisticRegression()
+
+from sklearn.svm import LinearSVC
+models['Support Vector Machines']=LinearSVC()
+
+from sklearn.tree import DecisionTreeClassifier
+models['Decision Tree']=DecisionTreeClassifier()
+
+from sklearn.ensemble import RandomForestClassifier
+models['Random forest']=RandomForestClassifier()
+
+from sklearn.naive_bayes import GaussianNB
+models['Naive bayes']=GaussianNB()
+
+from sklearn.neighbors import KNeighborsClassifier
+models['K-Nearest neighbors']=KNeighborsClassifier()
+
+from sklearn.metrics import accuracy_score,precision_score,recall_score
+accuracy,precision,recall={},{},{}
+
+for key in models.keys():
+  models[key].fit(x_train,y_train)
+  predictions=models[key].predict(x_test)
+  accuracy[key]=accuracy_score(predictions,y_test)
+  precision[key]=precision_score(predictions,y_test)
+  recall[key]=recall_score(predictions,y_test)
+
+import pandas as pd
+df_model=pd.DataFrame(index=models.keys(),columns=['Accuracy','Precision','Recall'])
+df_model['Accuracy']=accuracy.values()
+df_model['Precision']=precision.values()
+df_model['Recall']=recall.values()
+df_model
+ax=df_model.plot.barh()
+ax.legend(ncol=len(models.keys()),bbox_to_anchor=(0,1),loc='lower left',prop={'size':14})
+plt.tight_layout()
+plt.show()
