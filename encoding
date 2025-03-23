@@ -1,0 +1,13 @@
+import pandas as pd
+data=['red','orange','green','blue','green','red','blue']
+encoded_data=pd.get_dummies(data)
+print(encoded_data)
+
+from sklearn.preprocessing import OneHotEncoder
+import pandas as pd
+data=['red','green','blue','green','red']
+df=pd.DataFrame(data)
+encoder=OneHotEncoder()
+encoded_data=encoder.fit_transform(df).toarray()
+encoded_data
+
