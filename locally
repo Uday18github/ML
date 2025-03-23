@@ -1,0 +1,33 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def generate_data():
+  np.random.seed(42)
+  X=np.linspace(0,10,100)
+  y = np.sin(X)+np.random.normal(scale = 0.1 , size = X.shape)
+  return X,y
+
+def gaussian_weight(x,X,tau):
+  return np.exp(-((X-x)**2)/(2*tau**2))
+
+def locally_weighted_regression(X_train,y_train,X_query,tau):
+  w=np.diag(gaussian_weight(X_query,X_train,tau))
+  X_bias=np.c_[np.ones_like(X_train),X_train]
+  theta=np.linalg.pinv(X_bias.T @w@X_bias)@X_bias.T@w@y_train
+  return np.array([1,X_query])@theta
+
+def predict(X_train , y_train , X_test , tau):
+  return np.array([locally_weighted_regression(X_train,y_train,x,tau) for x in X_test])
+
+X,y=generate_data()
+tau=0.5
+X_test=np.linspace(0,10,100)
+y_pred=predict(X,y,X_test,tau)
+
+plt.scatter(X,y,label="Training Data",color="blue",alpha=0.5)
+plt.plot(X_test,y_pred,label=f"LWR(tau={tau})",color="red",linewidth=2)
+plt.xlabel("X")
+plt.ylabel("y")
+plt.legend()
+plt.title("Locally Weighted Regression")
+plt.show()
