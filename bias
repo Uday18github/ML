@@ -1,0 +1,45 @@
+pip install mlxtend
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from mlxtend.evaluate import bias_variance_decomp
+
+url='https://raw.githubusercontent.com/jbrownlee/Datasets/master/housing.csv'
+dataframe=pd.read_csv(url,header=None)
+dataframe.head()
+
+data=dataframe.values
+x=data[:,:-1]
+y=data[:,-1]
+y
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.33,random_state=1)
+
+model=LinearRegression()
+
+mse,bias,var=bias_variance_decomp(model,x_train,y_train,x_test,y_test,loss='mse',num_rounds=200,random_seed=1)
+
+print('MSE:%.3f'%mse)
+print('BIAS:%.3f'%bias)
+print('VARIANCE:%.3f'%var)
+
+sample_list=[11,13,15,16,13,16,11,15,17]
+print("The List is:"+str(sample_list))
+result=[]
+for i in sample_list:
+  if i not in result:
+    result.append(i)
+print("The list after removing duplicates:"+str(result))
+
+from sklearn.datasets import load_iris
+from sklearn.model_selection import cross_val_score,KFold
+from sklearn.linear_model import LogisticRegression
+iris=load_iris()
+x=iris.data
+y=iris.target
+logreg=LogisticRegression()
+kf=KFold(n_splits=5)
+score=cross_val_score(logreg,x,y,cv=kf)
+print("cross validation scores are :{}".format(score))
+print("Average cross validation score:{}".format(score.mean()))
